@@ -18,7 +18,6 @@ const CDP_PORT = 9333
 const WIDTH = 1300
 const HEIGHT = 780
 const TYPE_MS = 28
-const SPEED = 1.2
 
 const TEXT = {
   en: {
@@ -238,7 +237,7 @@ try {
   }
   await page('Page.stopScreencast')
 
-  // 프레임 사이 실제 시간으로 이어 붙이고, 1.2배속, 테두리, 팔레트를 입힌다
+  // 프레임 사이 실제 시간 그대로 이어 붙이고, 테두리와 팔레트를 입힌다
   const list = frames.map((f, i) => {
     const next = frames[i + 1]?.ts ?? f.ts + 2.5
     return `file '${f.file}'\nduration ${Math.max(0.01, next - f.ts).toFixed(3)}`
@@ -246,7 +245,7 @@ try {
   list.push(`file '${frames.at(-1).file}'`)
   writeFileSync(join(work, 'list.txt'), list.join('\n'))
   // 터미널 화면은 색이 적어서 점찍기(dither) 없이 팔레트만 써야 GIF가 작다
-  const filter = `setpts=PTS/${SPEED},fps=12,pad=${WIDTH + 36}:${HEIGHT + 36}:18:18:color=0x1e1e2e,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle`
+  const filter = `fps=12,pad=${WIDTH + 36}:${HEIGHT + 36}:18:18:color=0x1e1e2e,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle`
   const ff = spawnSync('ffmpeg', ['-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', join(work, 'list.txt'), '-vf', filter, OUT], { stdio: 'inherit' })
   if (ff.status !== 0) throw new Error('ffmpeg 실패')
   console.log(`${OUT} (${frames.length} frames)`)
