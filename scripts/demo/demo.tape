@@ -8,9 +8,9 @@ Set Height 780
 Set Padding 18
 Set Framerate 20
 Set Theme "Catppuccin Mocha"
-Set TypingSpeed 45ms
+Set TypingSpeed 28ms
 Set WindowBar Colorful
-Set PlaybackSpeed 1.4
+Set PlaybackSpeed 1.5
 
 Hide
 Type "scripts/demo/demo.sh"
@@ -18,31 +18,45 @@ Enter
 Sleep 12s
 Down
 Enter
-Sleep 12s
+Sleep 10s
 Show
 
-Sleep 1s
-Type "Walk me through src/orders.js in two lines"
-Sleep 400ms
-Enter
-Sleep 14s
-
-Type "/side why does the filter run twice?"
-Sleep 700ms
-Enter
-Sleep 22s
-
+# 나무를 먼저 열어 둔다: 처음엔 main 하나뿐
 Type "/tree"
-Sleep 700ms
+Sleep 300ms
 Enter
-Sleep 5s
+Sleep 1500ms
 
-Type "/back"
-Sleep 700ms
+Type "Walk me through src/orders.js in one line"
+Sleep 300ms
 Enter
 Sleep 6s
 
-Type "What did I just ask you? One line."
-Sleep 400ms
+# 첫 fork: 나무에 새 줄이 생기고 here가 옮겨 간다
+Type "/side why does the filter run twice?"
+Sleep 300ms
 Enter
-Sleep 12s
+Sleep 8s
+
+Type "/back"
+Sleep 300ms
+Enter
+Sleep 2500ms
+
+# 두 번째 fork: main 아래에 하나 더
+Type "/side is the cache key safe?"
+Sleep 300ms
+Enter
+Sleep 8s
+
+Type "/back"
+Sleep 300ms
+Enter
+Sleep 2500ms
+
+# main은 fork에서 한 질문을 모른다
+Type "What did I just ask you? One line."
+Sleep 300ms
+Enter
+Sleep 6s
+Sleep 2500ms

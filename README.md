@@ -69,6 +69,7 @@ claude plugin test plugins/claude-code       # unit tests
 claude plugin validate plugins/claude-code   # structure and API use
 python3 -I scripts/e2e.py                    # real round trip in a separate Claude Code (a few model calls)
 vhs scripts/demo/demo.tape                   # re-record docs/demo.gif
+vhs scripts/demo/demo.ko.tape                # re-record docs/demo.ko.gif (Korean)
 ```
 
 `scripts/e2e.py` removes its test folder, test sessions and plugin records, even when interrupted. It leaves the test folder's entry in `~/.claude.json` and its lines in `~/.claude/history.jsonl`, because a running Claude Code shares those files.
