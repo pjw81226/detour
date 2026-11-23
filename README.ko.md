@@ -14,7 +14,7 @@
   <img src="docs/demo.ko.gif" alt="detour 시연: /side로 fork하고, /tree로 fork 목록을 보고, /back으로 돌아오면 main은 fork에서 한 질문을 모른다" width="900">
 </p>
 
-<p align="center"><sub><code>/back</code>으로 돌아온 main은 fork하기 전에 나눈 대화만 기억합니다.</sub></p>
+<p align="center"><sub>fork는 몇 번이든 칠 수 있고, 나무에서 클릭하면 그 fork로 바로 옮겨 갑니다. 돌아온 main은 fork하기 전에 나눈 대화만 기억합니다.</sub></p>
 
 ## 만든 이유
 
@@ -68,8 +68,8 @@ claude --plugin-dir plugins/claude-code      # 받은 폴더에서 바로 실행
 claude plugin test plugins/claude-code       # 단위 시험
 claude plugin validate plugins/claude-code   # 구조와 API 사용 검사
 python3 -I scripts/e2e.py                    # 별도 Claude Code로 실제 왕복 확인(모델 호출 몇 번)
-vhs scripts/demo/demo.tape                   # docs/demo.gif(영어) 다시 녹화
-vhs scripts/demo/demo.ko.tape                # docs/demo.ko.gif(한국어) 다시 녹화
+node scripts/demo/record.mjs en              # docs/demo.gif(영어) 다시 녹화(ttyd, ffmpeg, Chrome 필요)
+node scripts/demo/record.mjs ko              # docs/demo.ko.gif(한국어) 다시 녹화
 ```
 
 `scripts/e2e.py`는 중간에 끊겨도 시험 폴더, 시험 세션, 플러그인 기록을 지웁니다. `~/.claude.json`의 시험 폴더 항목과 `~/.claude/history.jsonl`의 시험 줄은 남습니다. 떠 있는 Claude Code가 같이 쓰는 파일이라 건드리지 않습니다.

@@ -1,5 +1,5 @@
 #!/bin/zsh
-# README GIF 녹화용. 저장소 루트에서 `vhs scripts/demo/demo.tape`로 돌린다.
+# README GIF 녹화용. scripts/demo/record.mjs가 브라우저 터미널(ttyd) 안에서 이 스크립트를 띄운다.
 # 화면에 사용자 이름이 담긴 경로가 나오지 않게 /tmp 아래에 시연 폴더와 플러그인 사본을 둔다.
 # 사용자 설정(훅, 상태 표시줄, 다른 플러그인)은 빼고, 부모 Claude Code 세션의 환경 변수도 지우고 띄운다.
 root=${0:A:h:h:h}

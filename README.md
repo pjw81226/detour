@@ -14,7 +14,7 @@
   <img src="docs/demo.gif" alt="detour demo: /side forks the session, /tree shows the forks, /back returns to main and main never saw the side question" width="900">
 </p>
 
-<p align="center"><sub>After <code>/back</code>, main still only knows what you asked before the fork.</sub></p>
+<p align="center"><sub>Fork as often as you like, click any fork in the tree to jump to it. Back in main, Claude only knows what you asked before the fork.</sub></p>
 
 ## Why
 
@@ -68,8 +68,8 @@ claude --plugin-dir plugins/claude-code      # run from a checkout
 claude plugin test plugins/claude-code       # unit tests
 claude plugin validate plugins/claude-code   # structure and API use
 python3 -I scripts/e2e.py                    # real round trip in a separate Claude Code (a few model calls)
-vhs scripts/demo/demo.tape                   # re-record docs/demo.gif
-vhs scripts/demo/demo.ko.tape                # re-record docs/demo.ko.gif (Korean)
+node scripts/demo/record.mjs en              # re-record docs/demo.gif (needs ttyd, ffmpeg, Chrome)
+node scripts/demo/record.mjs ko              # re-record docs/demo.ko.gif
 ```
 
 `scripts/e2e.py` removes its test folder, test sessions and plugin records, even when interrupted. It leaves the test folder's entry in `~/.claude.json` and its lines in `~/.claude/history.jsonl`, because a running Claude Code shares those files.
