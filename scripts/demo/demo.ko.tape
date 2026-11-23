@@ -11,7 +11,7 @@ Set Framerate 20
 Set Theme "Catppuccin Mocha"
 Set TypingSpeed 28ms
 Set WindowBar Colorful
-Set PlaybackSpeed 1.5
+Set PlaybackSpeed 1.2
 
 Hide
 Type "scripts/demo/demo.sh"
@@ -24,40 +24,40 @@ Show
 
 # 나무를 먼저 열어 둔다: 처음엔 main 하나뿐
 Type "/tree"
-Sleep 300ms
+Sleep 150ms
 Enter
-Sleep 1500ms
+Sleep 800ms
 
 Type "src/orders.js 한 줄로 설명해 줘"
-Sleep 300ms
+Sleep 150ms
 Enter
-Sleep 6s
+Sleep 4s
 
 # 첫 fork: 나무에 새 줄이 생기고 here가 옮겨 간다
 Type "/side 필터가 왜 두 번 돌지?"
-Sleep 300ms
+Sleep 150ms
 Enter
-Sleep 8s
+Sleep 6s
 
 Type "/back"
-Sleep 300ms
+Sleep 150ms
 Enter
-Sleep 2500ms
+Sleep 2s
 
 # 두 번째 fork: main 아래에 하나 더
 Type "/side 캐시 키는 안전해?"
-Sleep 300ms
+Sleep 150ms
 Enter
-Sleep 8s
+Sleep 6s
 
 Type "/back"
-Sleep 300ms
+Sleep 150ms
 Enter
-Sleep 2500ms
+Sleep 2s
 
 # main은 fork에서 한 질문을 모른다
 Type "방금 내가 뭐 물어봤지? 한 줄로"
-Sleep 300ms
+Sleep 150ms
 Enter
-Sleep 6s
-Sleep 2500ms
+Sleep 4500ms
+Sleep 1500ms
