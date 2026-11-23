@@ -1,7 +1,15 @@
 {
   "name": "detour",
-  "version": "0.1.0",
-  "description": "Branch a side question off your Claude Code session and come back with only what you learned",
+  "version": "0.1.1",
+  "description": "Fork a side question off your Claude Code session, see the forks as a tree, and come back to where you were",
+  "author": {
+    "name": "pjw81226",
+    "url": "https://github.com/pjw81226"
+  },
+  "homepage": "https://github.com/pjw81226/detour",
   "license": "MIT",
-  "types": "./types/index.d.ts"
+  "types": "./types/index.d.ts",
+  "network": {
+    "hosts": []
+  }
 }
