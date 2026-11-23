@@ -1,0 +1,7 @@
+{
+  "name": "detour",
+  "version": "0.1.0",
+  "description": "Branch a side question off your Claude Code session and come back with only what you learned",
+  "license": "MIT",
+  "types": "./types/index.d.ts"
+}

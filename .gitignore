@@ -1,0 +1,5 @@
+# 실제 왕복 시험 기록과 작업 기록(개인 설정이 담길 수 있다)
+.superpowers/
+# Claude Code가 편집기용으로 만드는 파일
+plugins/claude-code/tsconfig.json
+__pycache__/

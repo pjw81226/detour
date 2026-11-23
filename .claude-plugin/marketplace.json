@@ -1,0 +1,13 @@
+{
+  "name": "detour",
+  "description": "Branch a side question off your Claude Code session and come back to where you were",
+  "owner": {
+    "name": "pjw81226"
+  },
+  "plugins": [
+    {
+      "name": "detour",
+      "source": "./plugins/claude-code"
+    }
+  ]
+}
