@@ -1,8 +1,38 @@
-# detour
+<h1 align="center">detour</h1>
 
-Claude Code 대화에서 잠깐 옆길로 빠져 곁가지 질문을 조사하고, 갈라졌던 지점으로 그대로 돌아와요. 곁가지에서 나눈 대화는 메인 대화에 섞이지 않아요.
+<p align="center">
+  <b>Claude Code 대화를 잠깐 fork해서 딴 질문을 하고,<br>아무 일 없었던 것처럼 원래 자리로 돌아옵니다.</b>
+</p>
 
-> English: [README.md](README.md)
+<p align="center">
+  <img src="https://img.shields.io/badge/Claude%20Code-plugin-d97757" alt="Claude Code plugin">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license">
+  <a href="README.md"><img src="https://img.shields.io/badge/README-English-lightgrey" alt="English README"></a>
+</p>
+
+<p align="center">
+  <img src="docs/demo.gif" alt="detour 시연: /side로 fork하고, /tree로 fork 목록을 보고, /back으로 돌아오면 main은 fork에서 한 질문을 모른다" width="900">
+</p>
+
+<p align="center"><sub><code>/back</code>으로 돌아온 main은 fork하기 전에 나눈 대화만 기억합니다.</sub></p>
+
+## 만든 이유
+
+기능을 만들다가 궁금한 게 생기면 보통 그 대화에서 바로 물어봅니다. 몇 번 주고받다 보면 하던 작업은 저 위로 밀려나고 컨텍스트도 지저분해집니다. `/branch`로 따로 떼면 되지만 돌아가려면 `/resume` 목록을 뒤져야 합니다. `/btw`는 빠르지만 파일 하나 열어 보지 못합니다.
+
+detour는 나가고 돌아오는 걸 명령어 하나씩으로 끝냅니다.
+
+```mermaid
+gitGraph
+  commit id: "orders.js 작업 중"
+  commit id: "코드 설명 요청"
+  branch fork
+  checkout fork
+  commit id: "/side 왜 두 번 돌지?"
+  commit id: "코드 읽고 원인 찾음"
+  checkout main
+  commit id: "/back 하던 자리로"
+```
 
 ## 설치
 
@@ -12,38 +42,36 @@ Claude Code 입력창에서:
 /plugin install detour --marketplace pjw81226/detour
 ```
 
-마켓플레이스를 추가할지 물으면 `y`, 그다음 설치 범위를 고르세요. 셸에서는 `claude plugin install detour --marketplace pjw81226/detour`예요.
-
-내려받은 폴더로 바로 써 보려면 `claude --plugin-dir /path/to/detour/plugins/claude-code`. Claude Code 2.1.330에서 확인했어요.
+마켓플레이스를 추가할지 물으면 `y`를 누르고 설치 범위를 고르면 됩니다. 셸에서는 `claude plugin install detour --marketplace pjw81226/detour`입니다.
 
 ## 사용법
 
-1. `/side 이 필터는 왜 두 번 돌지?`
-   지금 지점에서 대화를 가르고, 곁가지에서 그 질문을 보내요. Claude가 일하는 중이면 작업이 끝날 때까지 기다렸다가 갈라요.
-2. 곁가지에서 조사해요. 곁가지도 온전한 세션이라 도구를 전부 쓸 수 있어요.
-3. `/back`
-   메인 세션의 갈라졌던 지점으로 바로 돌아와요. 곁가지 내용은 가져오지 않아요. 알아낸 것 중 필요한 게 있으면 메인에서 Claude에게 직접 말하세요.
+| 명령 | 하는 일 |
+|---|---|
+| `/side <질문>` | 지금 시점에서 대화를 fork하고, fork한 세션에서 질문을 보냅니다. Claude가 작업 중이면 끝난 뒤에 fork합니다. |
+| `/back` | fork하기 전 세션의 그 시점으로 돌아갑니다. fork에서 나눈 대화는 가져오지 않습니다. |
+| `/tree` | 이 세션의 fork 목록을 오른쪽 패널에 띄웁니다. 클릭하면 그 세션으로 옮기고, `rename`으로 이름을 바꿀 수 있습니다. |
 
-`/tree`는 지금 세션의 가지 목록을 보여 줘요. 하나를 고르면 그 세션으로 옮기고, 옆의 `이름 바꾸기`를 누르면 이름을 고칠 수 있어요.
+fork 안에 있는 동안은 입력창 위에 `fork: <제목> | /back to return`이 보입니다.
 
-곁가지에 있는 동안 입력창 위에 `곁가지: <제목> | /back 으로 메인에 돌아가기`가 보여요.
+## 참고
 
-## 알아 둘 것
-
-- 대화만 갈라요. 곁가지에서 바꾼 파일은 그대로 남고, 돌아올 때 알림으로 목록을 보여 줘요.
-- `/side`가 기다리는 중에 Esc를 누르면, Claude Code가 사용자가 다시 입력할 때까지 플러그인 입력을 받지 않아요. 그래서 입력창에 `/side <질문>`을 다시 넣어 둬요. Enter를 누르세요.
-- 기본 `/branch`로 직접 가른 세션에서도 `/back`을 쓸 수 있어요.
+- 대화만 fork합니다. fork에서 수정한 파일은 그대로 남고, `/back` 할 때 어떤 파일인지 알려 줍니다.
+- `/side`가 대기 중일 때 Esc를 누르면 Claude Code가 다음 입력 전까지 플러그인 입력을 막습니다. 입력창에 `/side <질문>`이 다시 들어가 있으니 Enter만 누르면 됩니다.
+- 기본 `/branch`로 직접 만든 세션에서도 `/back`이 됩니다.
+- Claude Code 2.1.330에서 확인했습니다.
 
 ## 개발
 
 ```bash
+claude --plugin-dir plugins/claude-code      # 받은 폴더에서 바로 실행
 claude plugin test plugins/claude-code       # 단위 시험
 claude plugin validate plugins/claude-code   # 구조와 API 사용 검사
 python3 -I scripts/e2e.py                    # 별도 Claude Code로 실제 왕복 확인(모델 호출 몇 번)
-python3 -I scripts/test_e2e.py               # e2e 정리 동작 시험
+vhs scripts/demo/demo.tape                   # docs/demo.gif 다시 녹화
 ```
 
-`scripts/e2e.py`는 중간에 끊겨도 시험 폴더, 시험 세션, 플러그인 기록을 지워요. `~/.claude.json`의 시험 폴더 항목과 `~/.claude/history.jsonl`의 시험 줄은 남아요. 떠 있는 Claude Code가 함께 쓰는 파일이라 건드리지 않아요.
+`scripts/e2e.py`는 중간에 끊겨도 시험 폴더, 시험 세션, 플러그인 기록을 지웁니다. `~/.claude.json`의 시험 폴더 항목과 `~/.claude/history.jsonl`의 시험 줄은 남습니다. 떠 있는 Claude Code가 같이 쓰는 파일이라 건드리지 않습니다.
 
 ## 라이선스
 

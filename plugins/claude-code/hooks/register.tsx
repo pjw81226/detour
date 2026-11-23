@@ -25,9 +25,10 @@ const queue = createQueue()
 let isTicking = false
 
 const EDIT_TOOLS = new Set(['Edit', 'Write', 'NotebookEdit'])
-// 옆 칸에서 이름 바꾸기 버튼 앞 여백과 버튼 테두리가 차지하는 칸
+// 옆 칸에서 이름 바꾸기 버튼 앞 여백, 그 버튼의 테두리([ ]), 옆 칸 안쪽 여백이 차지하는 칸
 const RENAME_GAP = 2
 const BUTTON_CHROME = 4
+const PANE_INSET = 2
 
 type Rows = readonly { uuid?: string }[]
 
@@ -251,7 +252,7 @@ export const register: Register = on => {
     const { Box, Button, Input } = $.ui.resolve(e)
     // 이름 바꾸기 버튼과 그 앞 여백, 버튼 테두리를 뺀 만큼이 이름 폭이다
     const columns = typeof e.props.bodyColumns === 'number' ? e.props.bodyColumns : 40
-    const labelWidth = Math.max(10, columns - displayWidth(COPY.rename) - RENAME_GAP - BUTTON_CHROME)
+    const labelWidth = Math.max(10, columns - displayWidth(COPY.rename) - BUTTON_CHROME - RENAME_GAP - PANE_INSET)
     const rename = async (sessionId: string, value: string) => {
       const name = cleanTitle(value)
       if (name !== undefined) {
@@ -282,6 +283,7 @@ export const register: Register = on => {
                   <Button
                     key={i === 0 ? row.key : `${row.key}#${i}`}
                     label={line}
+                    plain
                     onPress={async () => {
                       if (row.isCurrent) return
                       if (!queue.enqueue({ kind: 'resume', targetSessionId: row.key })) $.ui.toast(COPY.busy)
