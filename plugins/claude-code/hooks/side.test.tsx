@@ -37,7 +37,7 @@ describe('/side', () => {
     await $.session.start(START)
     await $.command.run({ command: 'side', args: '첫 질문' })
     const second = await $.command.run({ command: 'side', args: '둘째 질문' })
-    expect(second.text).toBe('이미 곁가지로 갈 준비 중이에요')
+    expect(second.text).toBe('Already waiting to fork')
     await clock.advance(500)
     await clock.advance(500)
     expect(state.runs.length).toBe(1)
@@ -79,7 +79,7 @@ describe('입력창 위 한 줄', () => {
       await $.session.start(START)
       await $.command.run({ command: 'side', args: '필터 질문' })
       const ui = await $.ui.mount({ ...BAND(true), surface })
-      expect((await ui.find({ type: 'Text', text: /작업이 끝나면 곁가지로 가요/ }))?.text).toBe('작업이 끝나면 곁가지로 가요')
+      expect((await ui.find({ type: 'Text', text: /Will fork when Claude finishes/ }))?.text).toBe('Will fork when Claude finishes')
       await ui.unmount()
     })
 
@@ -89,7 +89,7 @@ describe('입력창 위 한 줄', () => {
       await $.command.run({ command: 'side', args: '필터 질문' })
       await clock.advance(500)
       const ui = await $.ui.mount({ ...BAND(false), surface })
-      expect((await ui.find({ type: 'Text', text: /곁가지:/ }))?.text).toBe('곁가지: 필터 질문 | /back 으로 메인에 돌아가기')
+      expect((await ui.find({ type: 'Text', text: /fork:/ }))?.text).toBe('fork: 필터 질문 | /back to return')
       await ui.unmount()
     })
 
@@ -99,7 +99,7 @@ describe('입력창 위 한 줄', () => {
       await $.command.run({ command: 'side', args: '필터 질문' })
       await clock.advance(500)
       const ui = await $.ui.mount({ ...BAND(false), props: { hasSurvey: true, isCollapsed: false, isWorking: false }, surface })
-      expect(await ui.find({ type: 'Text', text: /곁가지/ })).toBe(undefined)
+      expect(await ui.find({ type: 'Text', text: /fork:/ })).toBe(undefined)
       await ui.unmount()
     })
 
@@ -107,7 +107,7 @@ describe('입력창 위 한 줄', () => {
       fakeSession(on)
       await $.session.start(START)
       const ui = await $.ui.mount({ ...BAND(false), surface })
-      expect(await ui.find({ type: 'Text', text: /곁가지/ })).toBe(undefined)
+      expect(await ui.find({ type: 'Text', text: /fork:/ })).toBe(undefined)
       await ui.unmount()
     })
   }
@@ -116,7 +116,7 @@ describe('입력창 위 한 줄', () => {
 describe('세션이 바뀌었을 때', () => {
   async function bandText($: Parameters<Parameters<typeof test>[1]>[0]) {
     const ui = await $.ui.mount({ ...BAND(false), surface: 'terminal' })
-    const found = await ui.find({ type: 'Text', text: /곁가지:/ })
+    const found = await ui.find({ type: 'Text', text: /fork:/ })
     await ui.unmount()
     return found?.text
   }
@@ -142,7 +142,7 @@ describe('세션이 바뀌었을 때', () => {
     state.current = 'S2'
     await clock.advance(500)
     expect(storedRecords(state)[0]?.status).toBe('open')
-    expect(await bandText($)).toBe('곁가지: 필터 질문 | /back 으로 메인에 돌아가기')
+    expect(await bandText($)).toBe('fork: 필터 질문 | /back to return')
   })
 
   test('가르기가 실패해도 지금 곁가지 표시는 남기고 실패를 알린다', async ($, on) => {
@@ -154,8 +154,8 @@ describe('세션이 바뀌었을 때', () => {
     await $.command.run({ command: 'side', args: '더 깊은 질문' })
     await clock.advance(500)
     expect(state.current).toBe('S2')
-    expect(state.toasts.includes('곁가지를 열지 못했어요')).toBe(true)
-    expect(await bandText($)).toBe('곁가지: 필터 질문 | /back 으로 메인에 돌아가기')
+    expect(state.toasts.includes("Couldn't fork")).toBe(true)
+    expect(await bandText($)).toBe('fork: 필터 질문 | /back to return')
   })
 
   test('곁가지 첫 질문이 거부되면 입력창에 넣어 두고 알린다', async ($, on) => {
@@ -166,7 +166,7 @@ describe('세션이 바뀌었을 때', () => {
     await clock.advance(500)
     await clock.advance(500)
     expect(state.filled).toEqual(['필터 질문'])
-    expect(state.toasts.includes('질문을 입력창에 넣어 뒀어요. Enter로 보내세요')).toBe(true)
+    expect(state.toasts.includes('Your question is in the prompt box. Press Enter to send it')).toBe(true)
   })
 })
 
@@ -179,9 +179,9 @@ describe('Esc로 멈춘 뒤', () => {
     for (let i = 0; i < 12; i += 1) await clock.advance(500)
     expect(state.current).toBe('S1')
     expect(state.filled).toEqual(['/side 필터 질문'])
-    expect(state.toasts.includes('Esc로 멈춘 뒤라 바로 가르지 못했어요. Enter를 누르면 곁가지로 가요')).toBe(true)
+    expect(state.toasts.includes('Plugin input is paused after Esc. Press Enter to fork')).toBe(true)
     const again = await $.command.run({ command: 'side', args: '필터 질문' })
-    expect(again.text).toBe('곁가지를 준비해요: 필터 질문')
+    expect(again.text).toBe('Forking: 필터 질문')
   })
 })
 

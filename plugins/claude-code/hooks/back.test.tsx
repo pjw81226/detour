@@ -38,7 +38,7 @@ describe('/back 기본 흐름', () => {
     await $.tool.call({ tool: 'Edit', file_path: '/p/a.ts', old_string: 'a', new_string: 'b' })
     await $.command.run({ command: 'back', args: '' })
     await clock.advance(500)
-    expect(state.toasts.some(t => t.includes('/p/a.ts') && t.includes('곁가지에서 바뀐 파일은 그대로 남아요'))).toBe(true)
+    expect(state.toasts.some(t => t.includes('/p/a.ts') && t.includes('Files changed in the fork stay changed'))).toBe(true)
   })
 })
 
@@ -47,7 +47,7 @@ describe('/back 예외', () => {
     const { state } = fakeSession(on)
     await $.session.start(START)
     const r = await $.command.run({ command: 'back', args: '' })
-    expect(r.text).toBe('돌아갈 곳이 없어요')
+    expect(r.text).toBe('Nothing to go back to')
     expect(state.runs).toEqual([])
   })
 
@@ -66,7 +66,7 @@ describe('/back 예외', () => {
     state.sessions.get('S1')?.push(row('X1'), row('X2'), row('X3'))
     await $.command.run({ command: 'back', args: '' })
     await clock.advance(500)
-    expect(state.toasts.includes('곁가지에 있는 동안 메인이 메시지 3개만큼 진행됐어요. 마지막 지점으로 돌아왔어요')).toBe(true)
+    expect(state.toasts.includes('The original session moved on by 3 messages while you were away. You are at its latest point')).toBe(true)
   })
 
   test('메인으로 돌아가지 못하면 곁가지를 열린 채로 두고 알린다', async ($, on) => {
@@ -75,7 +75,7 @@ describe('/back 예외', () => {
     await $.command.run({ command: 'back', args: '' })
     await clock.advance(500)
     expect(state.current).toBe('S2')
-    expect(state.toasts.includes('메인 세션으로 돌아가지 못했어요')).toBe(true)
+    expect(state.toasts.includes("Couldn't go back to the original session")).toBe(true)
     expect(recordOf(state, 'S2')).toMatchObject({ status: 'open' })
   })
 
@@ -83,7 +83,7 @@ describe('/back 예외', () => {
     await openSide($, on)
     await $.command.run({ command: 'side', args: '또 다른 질문' })
     const r = await $.command.run({ command: 'back', args: '' })
-    expect(r.text).toBe('이미 다른 이동을 기다리는 중이에요')
+    expect(r.text).toBe('Already waiting to switch sessions')
   })
 
   test('직접 /branch로 가른 세션은 복사된 마지막 메시지를 부모로 쓴다(첨부, 시스템 줄 건너뜀)', async ($, on) => {

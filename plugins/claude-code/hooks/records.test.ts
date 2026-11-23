@@ -37,7 +37,7 @@ describe('titleFrom', () => {
   })
 
   test('질문이 없으면 HH:MM 곁가지', async () => {
-    expect(/^\d{2}:\d{2} 곁가지$/.test(titleFrom('', Date.UTC(2026, 10, 23, 5, 7)))).toBe(true)
+    expect(/^\d{2}:\d{2} fork$/.test(titleFrom('', Date.UTC(2026, 10, 23, 5, 7)))).toBe(true)
   })
 })
 

@@ -10,7 +10,7 @@ const PANE = {
   plugin: 'detour',
   component: 'Pane',
   requestId: PANE_ID,
-  props: { title: '가지', isFocused: false, bodyColumns: 60, placement: 'dock', scroll: { offset: 0, bodyRows: 20 }, view: {} },
+  props: { title: 'forks', isFocused: false, bodyColumns: 60, placement: 'dock', scroll: { offset: 0, bodyRows: 20 }, view: {} },
 } as const
 
 // 메인 S1 → 곁가지 S2("첫 질문") → 그 곁가지 S3("둘째 질문")까지 연다. 지금 세션은 S3
@@ -33,17 +33,17 @@ test('/tree는 옆 칸을 열고 출력은 사람에게만 보인다', async ($,
   await $.session.start(START)
   const r = await $.command.run({ command: 'tree', args: '' })
   expect(r.isTextDisplayOnly).toBe(true)
-  expect(state.opened).toEqual([{ id: PANE_ID, title: '가지' }])
+  expect(state.opened).toEqual([{ id: PANE_ID, title: 'forks' }])
 })
 
 test('/tree는 옆 칸이 안 보여도 명령 결과에 나무를 글로 보여 준다', async ($, on) => {
   await twoLevels($, on)
   const r = await $.command.run({ command: 'tree', args: '' })
   const text = r.text ?? ''
-  expect(text.includes('메인')).toBe(true)
+  expect(text.includes('main')).toBe(true)
   expect(text.includes('첫 질문')).toBe(true)
   expect(text.includes('둘째 질문')).toBe(true)
-  expect(text.includes('지금')).toBe(true)
+  expect(text.includes('here')).toBe(true)
 })
 
 test('옆 칸이 자리를 못 잡으면 그 이유를 알려 준다', async ($, on) => {
@@ -51,7 +51,7 @@ test('옆 칸이 자리를 못 잡으면 그 이유를 알려 준다', async ($,
   state.paneNotPlaced = true
   await $.session.start(START)
   const r = await $.command.run({ command: 'tree', args: '' })
-  expect((r.text ?? '').includes('옆 칸을 띄우지 못했어요')).toBe(true)
+  expect((r.text ?? '').includes("Couldn't open the pane")).toBe(true)
 })
 
 describe('옆 칸', () => {
@@ -62,11 +62,11 @@ describe('옆 칸', () => {
       const main = label(await ui.find({ key: 'S1' }))
       const first = label(await ui.find({ key: 'S2' }))
       const second = label(await ui.find({ key: 'S3' }))
-      expect(main.includes('메인')).toBe(true)
+      expect(main.includes('main')).toBe(true)
       expect(first.includes('첫 질문')).toBe(true)
       expect(second.includes('둘째 질문')).toBe(true)
-      expect(second.includes('지금')).toBe(true)
-      expect(first.includes('지금')).toBe(false)
+      expect(second.includes('here')).toBe(true)
+      expect(first.includes('here')).toBe(false)
       const indent = (s: string) => s.length - s.trimStart().length
       expect(indent(main) < indent(first) && indent(first) < indent(second)).toBe(true)
       await ui.unmount()
@@ -80,8 +80,8 @@ describe('옆 칸', () => {
     await clock.advance(500)
     expect(state.current).toBe('S1')
     expect(state.closed).toEqual([])
-    expect(label(await ui.find({ key: 'S1' })).includes('지금')).toBe(true)
-    expect(label(await ui.find({ key: 'S3' })).includes('지금')).toBe(false)
+    expect(label(await ui.find({ key: 'S1' })).includes('here')).toBe(true)
+    expect(label(await ui.find({ key: 'S3' })).includes('here')).toBe(false)
     await ui.unmount()
   })
 
@@ -102,7 +102,7 @@ describe('옆 칸', () => {
     state.current = 'S1'
     const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
     // 곁가지는 언제든 다시 들어가 이어서 물을 수 있어서 끝난 곁가지라는 표시는 두지 않는다
-    expect(label(await ui.find({ key: 'S2' })).includes('돌아옴')).toBe(false)
+    expect(label(await ui.find({ key: 'S2' })).includes('returned')).toBe(false)
     await $.ui.press({ plugin: 'detour', key: 'S2', requestId: PANE_ID })
     await clock.advance(500)
     expect(state.current).toBe('S2')
@@ -114,7 +114,7 @@ describe('옆 칸', () => {
       props: { hasSurvey: false, isCollapsed: false, isWorking: false },
       surface: 'terminal',
     })
-    expect((await band.find({ type: 'Text', text: /곁가지:/ }))?.text).toBe('곁가지: 첫 질문 | /back 으로 메인에 돌아가기')
+    expect((await band.find({ type: 'Text', text: /fork:/ }))?.text).toBe('fork: 첫 질문 | /back to return')
     await band.unmount()
   })
 })
@@ -146,7 +146,7 @@ describe('이름 바꾸기', () => {
     await $.ui.press({ plugin: 'detour', key: 'rename:S1', requestId: PANE_ID })
     await $.ui.input({ plugin: 'detour', key: 'name:S1', text: '클립 업로드 작업' })
     expect(label(await ui.find({ key: 'S1' })).includes('클립 업로드 작업')).toBe(true)
-    expect(label(await ui.find({ key: 'S1' })).includes('메인')).toBe(false)
+    expect(label(await ui.find({ key: 'S1' })).includes('main')).toBe(false)
     await ui.unmount()
   })
 
@@ -157,7 +157,7 @@ describe('이름 바꾸기', () => {
     await $.ui.input({ plugin: 'detour', key: 'name:S3', text: '더 깊은 조사' })
     await ui.unmount()
     const band = await $.ui.mount(BAND)
-    expect((await band.find({ type: 'Text', text: /곁가지:/ }))?.text).toBe('곁가지: 더 깊은 조사 | /back 으로 메인에 돌아가기')
+    expect((await band.find({ type: 'Text', text: /fork:/ }))?.text).toBe('fork: 더 깊은 조사 | /back to return')
     await band.unmount()
   })
 

@@ -30,7 +30,7 @@ export function titleFrom(question: string, now: number): string {
   const text = question.trim().replace(/\s+/g, ' ')
   if (text === '') {
     const d = new Date(now)
-    return `${pad2(d.getHours())}:${pad2(d.getMinutes())} 곁가지`
+    return `${pad2(d.getHours())}:${pad2(d.getMinutes())} fork`
   }
   // 이모지가 반쪽으로 잘리지 않게 코드 포인트 단위로 자른다
   const chars = Array.from(text)

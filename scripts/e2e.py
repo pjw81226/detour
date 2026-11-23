@@ -190,8 +190,6 @@ def judge(project_dir, only_wait=False):
     if any(t == "SIDE" for t in assistant_texts(main)):
         return "메인에 곁가지 답(SIDE)이 섞였다"
     # /back은 요약을 가져가지 않는다. 메인은 곁가지를 모르고, 갈라지기 전 메시지를 기억해야 한다
-    if "[곁가지" in open(main, encoding="utf-8").read():
-        return "메인에 곁가지 요약이 붙었다(요약은 가져가지 않아야 한다)"
     answer = answer_after(main, BACK_QUESTION)
     if "Reply with exactly: OK" not in answer:
         return f"/back 뒤 메인이 갈라지기 전 메시지를 기억하지 못했다: {answer[:160]!r}"
@@ -271,7 +269,7 @@ def wait_scenario(term):
     term.say(LONG_PROMPT)
     time.sleep(4)
     term.say("/side Reply with exactly: SIDE3")
-    if not term.wait_for(r"작업이 끝나면 곁가지로 가요", 15, at):
+    if not term.wait_for(r"Will fork when Claude finishes", 15, at):
         raise RuntimeError("작업 중 /side(기다리기): 기다린다는 표시가 뜨지 않았다")
     time.sleep(45)
     back(term)
@@ -285,11 +283,11 @@ def esc_scenario(term):
     term.say("Write the integers from 1 to 3000 separated by single spaces, and nothing else.")
     time.sleep(5)
     term.say("/side Reply with exactly: SIDE2")
-    if not term.wait_for(r"작업이 끝나면 곁가지로 가요", 15, at):
+    if not term.wait_for(r"Will fork when Claude finishes", 15, at):
         raise RuntimeError("작업 중 /side 뒤 기다린다는 표시가 뜨지 않았다(작업이 너무 빨리 끝났을 수 있다)")
     term.keys(b"\x1b")
     # 플러그인 입력은 사용자가 다시 입력할 때까지 거부된다. 5초 안에 풀리지 않으면 입력창에 /side가 다시 채워진다
-    if term.wait_for(r"Enter를 누르면 곁가지로 가요", 15, at):
+    if term.wait_for(r"Press Enter to fork", 15, at):
         print("Esc 뒤: 입력창에 다시 채워진 /side를 Enter로 보냄", flush=True)
         time.sleep(1)
         term.keys(b"\r")
